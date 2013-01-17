@@ -137,6 +137,25 @@ urlpatterns += ResourceView.patterns_for(Entry)
 ```
 
 
+User-based Filtering
+--------------------
+
+Queries can be filtered based on the logged in user by setting the model
+manager to `ResourceManager`.  Simply set it to be the manager for your
+model.  In your models.py:
+
+```python
+from django.db import models
+
+from resourceful.models import ResourceManager
+
+class Photo(models.Model):
+    [...]
+    
+    objects = ResourceManager()
+```
+
+
 Customizing Behavior
 --------------------
 
