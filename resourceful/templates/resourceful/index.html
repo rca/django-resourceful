@@ -2,7 +2,7 @@
 
 {% block content %}
 {% for item in items %}
-    <p>{{ item }} <a href="{% url item_url id=item.id %}">[show]</a></p>
+    <p>{{ item }} <a href="{% url show_url id=item.id %}">[show]</a></p>
 {% empty %}
     <p>No items</p>
 {% endfor %}

@@ -114,7 +114,7 @@ class ResourceView(View):
             # redirect to the item page
             url = self.request.session.pop('next', None)
             if url is None:
-                url = self.url_for('item', kwargs={'id': item.id})
+                url = self.url_for('show', kwargs={'id': item.id})
 
             return HttpResponseRedirect(url)
 
@@ -188,7 +188,7 @@ class ResourceView(View):
             # redirect to the item page
             url = self.request.session.pop('next', None)
             if url is None:
-                url_name = '{0}.item'.format(item._meta.module_name)
+                url_name = '{0}.show'.format(item._meta.module_name)
                 url = reverse(url_name, kwargs={'id': item.id})
 
             return HttpResponseRedirect(url)
@@ -204,9 +204,10 @@ class ResourceView(View):
 
         context = {
             'index_url': '{0}.index'.format(module_name),
-            'item_url': '{0}.item'.format(module_name),
+            'show_url': '{0}.show'.format(module_name),
             'new_url': '{0}.new'.format(module_name),
             'edit_url': '{0}.edit'.format(module_name),
+            'action_url': '{0}.edit'.format(module_name),
         }
 
         context.update(extra)
@@ -305,7 +306,7 @@ class ResourceView(View):
         urlpatterns = patterns('',
             url(r'{0}$'.format(url_prefix), view, name='{0}.index'.format(url_prefix)),
             url(r'{0}/new$'.format(url_prefix), view, kwargs={'action': 'new'}, name='{0}.new'.format(url_prefix)),
-            url(r'{0}/(?P<id>[^/]+)$'.format(url_prefix), view, name='{0}.item'.format(url_prefix)),
+            url(r'{0}/(?P<id>[^/]+)$'.format(url_prefix), view, name='{0}.show'.format(url_prefix)),
             url(r'{0}/(?P<id>[^/]+)/edit$'.format(url_prefix), view, kwargs={'action': 'edit'}, name='{0}.edit'.format(url_prefix)),
             url(r'{0}/(?P<id>[^/]+)/(?P<action>[^/]*)$'.format(url_prefix), view, name='{0}.action'.format(url_prefix)),
         )
