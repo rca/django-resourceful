@@ -151,7 +151,7 @@ from resourceful.models import ResourceManager
 
 class Photo(models.Model):
     [...]
-    
+
     objects = ResourceManager()
 ```
 
@@ -180,4 +180,20 @@ from blog.models import Entry
 from myapp.views import MyResourceView
 
 urlpatterns = MyResourceView.patterns_for(Entry)
+```
+
+
+Installation
+------------
+
+If using PIP, add the following to `requirements.txt`:
+
+```
+-e git://github.com/rca/django-resourceful.git#egg=django-resourceful
+```
+
+It can also be installed on the command line:
+
+```
+pip install -e git://github.com/rca/django-resourceful.git#egg=django-resourceful
 ```
