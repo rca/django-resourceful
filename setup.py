@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='django-resourceful',
-      version='0.1',
+      version='0.2',
       description='Resourceful routing for Django',
       author='Roberto Aguilar',
       author_email='roberto.c.aguilar@gmail.com',
