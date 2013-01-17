@@ -135,8 +135,8 @@ If that template does not exist, a basic default template at
 `resourceful/show.html` is used instead.
 
 
-Choosing an output format
--------------------------
+Choosing an output format ... Free API!
+---------------------------------------
 
 The routing mechanism also detects the format being requested.  HTML is,
 obviously, the default.  When a request is made using AJAX, the format is
@@ -144,6 +144,8 @@ automatically changed to JSON based on the `X-Requested-With` HTTP header.
 
 The format can also be requested explicitly by making the request with the
 `_format` query parameter set.  Currently only `html` and `json` are supported.
+
+With no additional code, your application can serve JSON data back to the client.
 
 
 Specifying a request method
