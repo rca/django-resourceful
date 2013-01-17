@@ -54,7 +54,7 @@ class ResourceView(View):
         PUT	/photos/:id	update	update a specific photo
         DELETE	/photos/:id	destroy	delete a specific photo
         """
-        request.method = request.REQUEST.get('_method', request.method)
+        request.method = request.REQUEST.get('_method', request.method).upper()
 
         id = kwargs.get('id') or None
         action = kwargs.get('action') or None
