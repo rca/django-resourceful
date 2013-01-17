@@ -204,6 +204,71 @@ urlpatterns = MyResourceView.patterns_for(Entry)
 ```
 
 
+Action Views
+------------
+
+With the Resourceful app, views in your application take on a different
+meaning.  Views now represent a specific action taking place within the
+application.  As an example, here is a typical view handling a form submission:
+
+```python
+from django.shortcuts import render
+from django.http import HttpResponseRedirect
+
+def contact(request):
+    if request.method == 'POST': # If the form has been submitted...
+        form = ContactForm(request.POST) # A form bound to the POST data
+        if form.is_valid(): # All validation rules pass
+            # Process the data in form.cleaned_data
+            # ...
+            return HttpResponseRedirect('/thanks/') # Redirect after POST
+    else:
+        form = ContactForm() # An unbound form
+
+    return render(request, 'contact.html', {
+        'form': form,
+    })
+```
+
+The above view handles presenting a form to the user as well as processing a
+posted data.  Higher up, there is no distinction whether the request made was
+getting data or submitting data.  Additionally, there is no distinction between
+posting new data and updating existing data.  Such distinctions are generally
+left up to the user and are usually handled all within a single view.
+
+Resourceful views change that.  The above example becomes:
+
+```python
+from django.shortcuts import render
+from django.http import HttpResponseRedirect
+
+from resourceful.views import ResourceView
+
+
+class MyResourceView(ResourceView):
+    def new(self, request, *args, **kwargs):
+        form = ContactForm()
+
+        return render(request, 'contact.html', {
+            'form': form,
+        })
+
+    def create(self, request, *args, **kwargs):
+        form = ContactForm(request.POST) # A form bound to the POST data
+        if form.is_valid(): # All validation rules pass
+            # Process the data in form.cleaned_data
+            # ...
+            return HttpResponseRedirect('/thanks/') # Redirect after POST
+
+        return render(request, 'contact.html', {
+            'form': form,
+        })
+```
+
+Here there is no logic necessary for detecting the request's intent; that has
+been determined for you in advance.
+
+
 Installation
 ------------
 
