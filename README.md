@@ -119,6 +119,7 @@ add the following to `urls.py`:
 ```python
 [...]
 
+from resourceful.views import ResourceView
 from portfolio.models import Photo
 
 urlpatterns = ResourceView.patterns_for(Photo)
@@ -129,6 +130,7 @@ Additional resources can be added by appending `urlpatterns`:
 ```python
 [...]
 
+from resourceful.views import ResourceView
 from blog.models import Entry
 
 urlpatterns += ResourceView.patterns_for(Entry)
@@ -143,7 +145,7 @@ overriding the desired action method.  For example, to change the behavior of
 the `index` action, create your own subclass (in your app's views.py):
 
 ```python
-from resourceview.views import ResourceView
+from resourceful.views import ResourceView
 
 class MyResourceView(ResourceView):
     def index(request, *args, **kwargs):
