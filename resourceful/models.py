@@ -13,9 +13,10 @@ class ResourceManager(models.Manager):
         return self.filter_for_user(user)
 
     def filter_for_user(self, user, *args, **kwargs):
-        kwargs.update({
-            self.user_field: user.id, # use id because this is for FK
-        })
+        if self.user_field:
+            kwargs.update({
+                self.user_field: user.id, # use id because this is for FK
+            })
 
         return self.filter(*args, **kwargs)
 
