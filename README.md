@@ -5,7 +5,7 @@ Rails-like resourceful routing for Django.
 
 This app aims to provide an easy-to-use routing mechanism that calls view
 methods specific to the type of request being made, loosely following
-the resource convention found in Ruby on Rails.
+the [resource convention found in Ruby on Rails](http://guides.rubyonrails.org/routing.html).
 
 Below is an example of the routes supported out of the box, for a Photo model:
 
@@ -55,8 +55,8 @@ Below is an example of the routes supported out of the box, for a Photo model:
     <tr>
         <td>PUT</td>
         <td>/photo/:id/edit</td>
-        <td>edit</td>
-        <td>return an HTML form for editing a photo</td>
+        <td>update</td>
+        <td>update a specific photo</td>
     </tr>
     <tr>
         <td>PUT</td>
