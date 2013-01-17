@@ -1,0 +1,8 @@
+{% extends "site/base.html" %}
+
+{% block content %}
+<p>{{ item }}</p>
+
+<p><a href="{% url edit_url id=item.id %}">edit</a></p>
+<p><a href="{% url item_url id=item.id %}?_method=DELETE">delete</a></p>
+{% endblock %}

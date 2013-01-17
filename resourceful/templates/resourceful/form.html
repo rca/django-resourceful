@@ -1,0 +1,13 @@
+{% extends "site/base.html" %}
+
+{% block content %}
+    <form method="POST" action="{{ request.path }}">{% csrf_token %}
+        {% if method %}<input type="hidden" name="_method" value="{{ method }}" />{% endif %}
+        <table>
+            {{ form }}
+            <tr>
+                <td><input type="submit" value="Save" /></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

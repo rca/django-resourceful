@@ -1,0 +1,10 @@
+{% extends "site/base.html" %}
+
+{% block content %}
+{% for item in items %}
+    <p>{{ item }} <a href="{% url item_url id=item.id %}">[show]</a></p>
+{% empty %}
+    <p>No items</p>
+{% endfor %}
+<p><a href="{% url new_url %}">Add</a></p>
+{% endblock %}
