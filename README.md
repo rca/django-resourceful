@@ -13,60 +13,70 @@ Below is an example of the routes supported out of the box, for a Photo model:
     <tr>
         <th>Request Method</th>
         <th>URL</th>
+        <th>Django URL name</th>
         <th>View Method</th>
         <th>Description</th>
     </tr>
     <tr>
         <td>GET</td>
         <td>/photo</td>
+        <td>photo.index</td>
         <td>index</td>
         <td>display a list of all photos</td>
     </tr>
     <tr>
         <td>GET</td>
         <td>/photo/new</td>
+        <td>photo.new</td>
         <td>new</td>
         <td>return an HTML form for creating a new photo</td>
     </tr>
     <tr>
         <td>POST</td>
         <td>/photo/new</td>
+        <td>photo.new</td>
         <td>create</td>
         <td>create a new photo</td>
     </tr>
     <tr>
         <td>POST</td>
         <td>/photo</td>
+        <td>photo.index</td>
         <td>create</td>
         <td>create a new photo</td>
     </tr>
     <tr>
         <td>GET</td>
         <td>/photo/:id</td>
+        <td>photo.show</td>
         <td>show</td>
         <td>display a specific photo</td>
     </tr>
     <tr>
         <td>GET</td>
         <td>/photo/:id/edit</td>
+        <td>photo.edit</td>
         <td>edit</td>
         <td>return an HTML form for editing a photo</td>
     </tr>
     <tr>
         <td>PUT</td>
         <td>/photo/:id/edit</td>
+        <td>photo.edit</td>
         <td>update</td>
         <td>update a specific photo</td>
     </tr>
     <tr>
         <td>PUT</td>
         <td>/photo/:id</td>
+        <td>photo.show</td>
         <td>update</td>
         <td>update a specific photo</td>
     </tr>
     <tr>
         <td>DELETE</td>
         <td>/photo/:id</td>
+        <td>photo.show</td>
         <td>destroy</td>
         <td>delete a specific photo</td>
     </tr>
