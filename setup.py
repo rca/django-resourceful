@@ -9,4 +9,7 @@ setup(name='django-resourceful',
       author_email='roberto.c.aguilar@gmail.com',
       url='http://github.com/rca/django-resourceful',
       packages=['resourceful'],
+      package_data={'': [
+          'templates/resourceful/*',
+      ]},
      )
