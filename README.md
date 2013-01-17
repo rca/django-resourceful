@@ -140,13 +140,13 @@ Customizing Behavior
 
 Customizing the default behavior can be done by subclassing `ResourceView` and
 overriding the desired action method.  For example, to change the behavior of
-the `list` action, create your own subclass (in your app's views.py):
+the `index` action, create your own subclass (in your app's views.py):
 
 ```python
 from resourceview.views import ResourceView
 
 class MyResourceView(ResourceView):
-    def list(request, *args, **kwargs):
+    def index(request, *args, **kwargs):
         < your custom code >
 ```
 
