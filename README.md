@@ -93,46 +93,11 @@ Below is an example of the routes supported out of the box, for a Photo model:
 </table>
 
 
-Choosing an output format
--------------------------
-
-The routing mechanism also detects the format being requested.  HTML is,
-obviously, the default.  When a request is made using AJAX, the format is
-automatically changed to JSON based on the `X-Requested-With` HTTP header.
-
-The format can also be requested explicitly by making the request with the
-`_format` query parameter set.  Currently only `html` and `json` are supported.
-
-
-Specifying a request method
----------------------------
-
-Similar to selecting a format, specifying the request method is done by setting
-the `_method` query parameter.  For example, the following URL will delete the
-photo with ID 10:
-
-```
-/photo/10?_method=delete
-```
-
-
-Template Selection
-------------------
-
-Template paths are selected automatically based on the name of the app a model
-is in, the name of the model, and the name of the resource requested.  For
-example, a `GET` request for a particular `Photo` model item in the `portfolio`
-app at the URL `/photo/10` would result in the `show()` method to be called and
-rendered using the `portfolio/photo/show.html` template.
-
-If that template does not exist, a basic default template at
-`resourceful/show.html` is used instead.
-
-
 Declaring Resources
 -------------------
 
-Resources are declared by adding URL patterns using the
+Getting started with the Resourceful app is easy.  Just add resources to your
+URLconf.  Resources are declared by adding URL patterns using the
 `ResourceView.patterns_for()` helper.  To add resources for the `Photo` model,
 add the following to `urls.py`:
 
@@ -154,6 +119,42 @@ from resourceful.views import ResourceView
 from blog.models import Entry
 
 urlpatterns += ResourceView.patterns_for(Entry)
+```
+
+
+Template Selection
+------------------
+
+Template paths are selected automatically based on the name of the app a model
+is in, the name of the model, and the name of the resource requested.  For
+example, a `GET` request for a particular `Photo` model item in the `portfolio`
+app at the URL `/photo/10` would result in the `show()` method to be called and
+rendered using the `portfolio/photo/show.html` template.
+
+If that template does not exist, a basic default template at
+`resourceful/show.html` is used instead.
+
+
+Choosing an output format
+-------------------------
+
+The routing mechanism also detects the format being requested.  HTML is,
+obviously, the default.  When a request is made using AJAX, the format is
+automatically changed to JSON based on the `X-Requested-With` HTTP header.
+
+The format can also be requested explicitly by making the request with the
+`_format` query parameter set.  Currently only `html` and `json` are supported.
+
+
+Specifying a request method
+---------------------------
+
+Similar to selecting a format, specifying the request method is done by setting
+the `_method` query parameter.  For example, the following URL will delete the
+photo with ID 10:
+
+```
+/photo/10?_method=delete
 ```
 
 
