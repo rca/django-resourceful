@@ -84,6 +84,18 @@ The format can also be requested explicitly by making the request with the
 `_format` query parameter set.  Currently only `html` and `json` are supported.
 
 
+Specifying a request method
+---------------------------
+
+Similar to selecting a format, specifying the request method is done by setting
+the `_method` query parameter.  For example, the following URL will delete the
+photo with ID 10:
+
+```
+/photo/10?_method=delete
+```
+
+
 Template Selection
 ------------------
 
