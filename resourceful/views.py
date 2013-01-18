@@ -289,14 +289,19 @@ class ResourceView(View):
         return reverse(url_name, args=args, kwargs=kwargs)
 
     @classmethod
-    def patterns_for(cls, model_class, url_prefix=None, **kwargs):
+    def patterns_for(cls, model_class=None, url_prefix=None, **kwargs):
         if isinstance(model_class, six.string_types):
             app_label, model_name = model_class.split('.', 1)
             model_class = get_model(app_label, model_name)
 
-        url_prefix = url_prefix or model_class._meta.object_name.lower()
+        model_wrapper = None
 
-        model_wrapper = ModelWrapper(model_class)
+        if model_class:
+            url_prefix = url_prefix or model_class._meta.object_name.lower()
+            model_wrapper = ModelWrapper(model_class)
+        elif url_prefix is None:
+            raise RoutingError('Unable to create patterns without a prefix or model_class')
+
         view = cls.as_view(model_class=model_wrapper, **kwargs)
 
         urlpatterns = patterns('',
