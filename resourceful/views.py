@@ -95,8 +95,7 @@ class ResourceView(View):
 
         # when a format is not explicitly requested and the XMLHttpRequest
         # header is found, route to <action>_json handler if one is defined.
-        requested_with = request.META.get('HTTP_X_REQUESTED_WITH')
-        if requested_with == 'XMLHttpRequest' and self.format is None:
+        if request.is_ajax() and self.format is None:
             self.format = 'json'
 
         handler = getattr(self, action, self.http_method_not_allowed)
