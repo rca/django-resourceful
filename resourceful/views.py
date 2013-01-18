@@ -163,9 +163,6 @@ class ResourceView(View):
 
         return self.render(ctx)
 
-    def post(self, *args, **kwargs):
-        return HttpResponse('post!')
-
     def show(self, *args, **kwargs):
         id = kwargs['id']
 
