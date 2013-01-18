@@ -147,11 +147,16 @@ class ResourceView(View):
     def index(self, *args, **kwargs):
         filter_kwargs = self._get_request_id_params()
 
+        items = self._get_items(**filter_kwargs)
+
         ctx = self.get_context({
-            'items': self.model_class.objects.filter_for_user(self.request.user, **filter_kwargs),
+            'items': items,
         })
 
         return self.render(ctx)
+
+    def _get_items(self, **kwargs):
+        return self.model_class.objects.filter_for_user(self.request.user, **kwargs)
 
     def new(self, *args, **kwargs):
         next = self.request.REQUEST.get('next')
