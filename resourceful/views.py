@@ -29,6 +29,8 @@ class RoutingError(Exception):
 
 class ResourceView(View):
     model_class = None
+    url_prefix = None
+    template_dir = None
     serialize_fields = None # When None default fields are serialized
 
     def __init__(self, **kwargs):
@@ -196,14 +198,14 @@ class ResourceView(View):
     #
 
     def get_context(self, extra):
-        module_name = self.model_class._meta.module_name
+        url_prefix = self.url_prefix
 
         context = {
-            'index_url': '{0}.index'.format(module_name),
-            'show_url': '{0}.show'.format(module_name),
-            'new_url': '{0}.new'.format(module_name),
-            'edit_url': '{0}.edit'.format(module_name),
-            'action_url': '{0}.edit'.format(module_name),
+            'index_url': '{0}.index'.format(url_prefix),
+            'show_url': '{0}.show'.format(url_prefix),
+            'new_url': '{0}.new'.format(url_prefix),
+            'edit_url': '{0}.edit'.format(url_prefix),
+            'action_url': '{0}.edit'.format(url_prefix),
         }
 
         context.update(extra)
@@ -267,10 +269,7 @@ class ResourceView(View):
 
     @property
     def template_name(self):
-        meta = self.model_class._meta
-        template = os.path.join(meta.app_label, meta.module_name, '{0}.html'.format(self.action))
-
-        return template
+        return os.path.join(self.template_dir, self.url_prefix, '{0}.html'.format(self.action))
 
     @property
     def templates(self):
@@ -289,20 +288,38 @@ class ResourceView(View):
         return reverse(url_name, args=args, kwargs=kwargs)
 
     @classmethod
-    def patterns_for(cls, model_class=None, url_prefix=None, **kwargs):
+    def patterns_for(cls, model_class=None, template_dir=None, url_prefix=None, **kwargs):
         if isinstance(model_class, six.string_types):
-            app_label, model_name = model_class.split('.', 1)
-            model_class = get_model(app_label, model_name)
+            t_app_label, t_model_name = model_class.split('.', 1)
+            model_class = get_model(t_app_label, t_model_name)
 
         model_wrapper = None
 
         if model_class:
+            if template_dir:
+                raise RoutingError('Do not specify template_dir when giving a model_class')
+
             url_prefix = url_prefix or model_class._meta.object_name.lower()
             model_wrapper = ModelWrapper(model_class)
-        elif url_prefix is None:
-            raise RoutingError('Unable to create patterns without a prefix or model_class')
 
-        view = cls.as_view(model_class=model_wrapper, **kwargs)
+            meta = model_class._meta
+            template_dir = meta.app_label
+
+        # make sure we have all the vars we need
+        if url_prefix is None:
+            raise RoutingError(
+                'Unable to create patterns without url_prefix or model_class')
+
+        if template_dir is None:
+            raise RoutingError(
+                'Unable to create patterns without a template_dir or model_class')
+
+        view = cls.as_view(
+            model_class=model_wrapper,
+            url_prefix=url_prefix,
+            template_dir=template_dir,
+            **kwargs
+        )
 
         urlpatterns = patterns('',
             url(r'{0}$'.format(url_prefix), view, name='{0}.index'.format(url_prefix)),
