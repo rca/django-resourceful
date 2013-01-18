@@ -182,24 +182,40 @@ class ResourceView(View):
         return self.render(ctx)
 
     def update(self, *args, **kwargs):
-        id = kwargs['id']
-        item = self.model_class.objects.get_for_user(
-            self.request.user, pk=id)
+        item = self.get_item(kwargs['id']),
+        form = self.get_form(self.request.PUT, instance=item)
 
-        form = self.get_form(self.request.POST, instance=item)
+        ctx = {
+            'form': form,
+            'item': item,
+        }
+
+        try:
+            self._update_handle_form(form)
+            return self._update_success(item)
+        except Exception, exc:
+            ctx['error'] = exc
+
+        return self._update_error(ctx)
+
+    def get_item(self, id):
+        return self.model_class.objects.get_for_user(self.request.user, pk=id)
+
+    def _update_handle_form(self, form):
         if form.is_valid():
-            item = form.save()
+            form.save()
 
-            # redirect to the item page
-            url = self.request.session.pop('next', None)
-            if url is None:
-                url_name = '{0}.show'.format(item._meta.module_name)
-                url = reverse(url_name, kwargs={'id': item.id})
+    def _update_error(self, ctx):
+        return self.render(ctx)
 
-            return HttpResponseRedirect(url)
+    def _update_success(self, item):
+        # redirect to the item page
+        url = self.request.session.pop('next', None)
+        if url is None:
+            url_name = '{0}.show'.format(item._meta.module_name)
+            url = reverse(url_name, kwargs={'id': item.id})
 
-        return HttpResponse('update')
-
+        return HttpResponseRedirect(url)
     #
     # -- Helper methods
     #
@@ -220,6 +236,10 @@ class ResourceView(View):
         return context
 
     def _get_request_id_params(self):
+        """
+        pass any query parameter that comes in with the request ending in
+        '_id' as initial form data.  The key should have '_id' stripped off.
+        """
         kwargs = {}
         query_params = self.request.REQUEST
 
