@@ -2,10 +2,10 @@ import json
 import os
 
 from django.core.urlresolvers import reverse
-from django.db.models.loading import get_model
 from django.conf.urls import patterns, url
-from django.http import HttpResponse, HttpResponseRedirect
+from django.db.models.loading import get_model
 from django.forms import BaseModelForm
+from django.http import HttpResponse, HttpResponseRedirect, QueryDict
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import six
@@ -67,6 +67,7 @@ class ResourceView(View):
                 if request.method == 'GET':
                     action = 'show'
                 elif request.method == 'PUT':
+                    request.PUT = QueryDict(request.body)
                     action = 'update'
                 elif request.method == 'DELETE':
                     action = 'destroy'
