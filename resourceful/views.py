@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.db.models.loading import get_model
 from django.conf.urls import patterns, url
 from django.http import HttpResponse, HttpResponseRedirect
+from django.forms import BaseModelForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import six
@@ -12,7 +13,7 @@ from django.utils.importlib import import_module
 from django.views.generic import View
 
 from resourceful.encoder import DjangoEncoder
-from resourceful.forms import ResourceForm
+from resourceful.forms import BaseResourceForm
 from resourceful.models import ModelWrapper
 
 class RenderError(Exception):
@@ -261,14 +262,18 @@ class ResourceView(View):
         return getattr(forms, form_name)
 
     def get_form(self, data=None, instance=None):
-        # pass any query parameter that comes in with the request ending in
-        # '_id' as initial form data.  The key should have '_id' stripped off.
-        initial = self._get_request_id_params()
+        form_kwargs = {
+            'data': data,
+            'initial': self._get_request_id_params(),
+        }
 
-        if issubclass(self.form_class, ResourceForm):
-            form = self.form_class(data, instance=instance, initial=initial, view=self)
-        else:
-            form = self.form_class(data, instance=instance, initial=initial)
+        if issubclass(self.form_class, BaseModelForm):
+            form_kwargs['instance'] = instance
+
+        if issubclass(self.form_class, BaseResourceForm):
+            form_kwargs['view'] = self
+
+        form = self.form_class(**form_kwargs)
 
         return form
 
