@@ -184,7 +184,7 @@ class ResourceView(View):
         return self.render(ctx)
 
     def update(self, *args, **kwargs):
-        item = self.get_item(kwargs['id']),
+        item = self.get_item(kwargs['id'])
         form = self.get_form(self.request.PUT, instance=item)
 
         ctx = {
