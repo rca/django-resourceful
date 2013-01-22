@@ -114,19 +114,7 @@ class ResourceView(View):
         if form.is_valid():
             item = form.save()
 
-            # redirect to the item page or to the specified URL
-            # if there is a next URL specified in the session,
-            # pop it out of the session ...
-            url = self.request.session.pop('next', None)
-
-            # ... but if a URL is specified in this request, it
-            # trumps whatever was in the session.  the session
-            # should be cleaned out, which is why we pop the
-            # session first
-            url = self.request.REQUEST.get('next') or url
-
-            # finally, if there is no URL specified, get the
-            # show url for this item.
+            url = self._get_next_url()
             if url is None:
                 url = self.url_for('show', kwargs={'id': item.id})
 
@@ -222,7 +210,7 @@ class ResourceView(View):
 
     def _update_success(self, item):
         # redirect to the item page
-        url = self.request.session.pop('next', None)
+        url = self._get_next_url()
         if url is None:
             url_name = '{0}.show'.format(item._meta.module_name)
             url = reverse(url_name, kwargs={'id': item.id})
@@ -246,6 +234,27 @@ class ResourceView(View):
         context.update(extra)
 
         return context
+
+    def _get_next_url(self):
+        """
+        Returns the next URL.
+
+        This function checks the session for the variable "next" to contain a
+        URL for redirection.  It will be popped out of the session and used,
+        unless next is also specified in the current request.
+        """
+        # redirect to the item page or to the specified URL
+        # if there is a next URL specified in the session,
+        # pop it out of the session ...
+        url = self.request.session.pop('next', None)
+
+        # ... but if a URL is specified in this request, it
+        # trumps whatever was in the session.  the session
+        # should be cleaned out, which is why we pop the
+        # session first
+        url = self.request.REQUEST.get('next') or url
+
+        return url
 
     def _get_request_id_params(self):
         """
