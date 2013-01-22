@@ -114,9 +114,19 @@ class ResourceView(View):
         if form.is_valid():
             item = form.save()
 
-            # redirect to the item page
-            url = self.request.session.pop('next', None) or \
-                self.request.REQUEST.get('next')
+            # redirect to the item page or to the specified URL
+            # if there is a next URL specified in the session,
+            # pop it out of the session ...
+            url = self.request.session.pop('next', None)
+
+            # ... but if a URL is specified in this request, it
+            # trumps whatever was in the session.  the session
+            # should be cleaned out, which is why we pop the
+            # session first
+            url = self.request.REQUEST.get('next') or url
+
+            # finally, if there is no URL specified, get the
+            # show url for this item.
             if url is None:
                 url = self.url_for('show', kwargs={'id': item.id})
 
