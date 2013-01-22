@@ -142,6 +142,7 @@ class ResourceView(View):
 
         ctx = self.get_context({
             'form': self.get_form(instance=item),
+            'item': item,
             'method': 'PUT',
         })
 
