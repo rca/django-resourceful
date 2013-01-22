@@ -115,7 +115,8 @@ class ResourceView(View):
             item = form.save()
 
             # redirect to the item page
-            url = self.request.session.pop('next', None)
+            url = self.request.session.pop('next', None) or \
+                self.request.REQUEST.get('next')
             if url is None:
                 url = self.url_for('show', kwargs={'id': item.id})
 
