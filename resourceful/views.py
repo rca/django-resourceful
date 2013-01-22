@@ -113,17 +113,22 @@ class ResourceView(View):
         form = self.get_form(self.request.POST)
         if form.is_valid():
             item = form.save()
-
-            url = self._get_next_url()
-            if url is None:
-                url = self.url_for('show', kwargs={'id': item.id})
-
-            return HttpResponseRedirect(url)
+            return self._create_success(item)
 
         ctx = {
             'form': form,
         }
 
+        return self._create_error(ctx)
+
+    def _create_success(self, item):
+        url = self._get_next_url()
+        if url is None:
+            url = self.url_for('show', kwargs={'id': item.id})
+
+        return HttpResponseRedirect(url)
+
+    def _create_error(self, ctx):
         return self.render(ctx)
 
     def destroy(self, *args, **kwargs):
