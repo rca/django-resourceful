@@ -136,7 +136,7 @@ class ResourceView(View):
             self.request.user, pk=kwargs['id'])
         item.delete()
 
-        return HttpResponseRedirect(self.url_for('index'))
+        return HttpResponseRedirect(self._get_next_url(default=self.url_for('index')))
 
     def edit(self, *args, **kwargs):
         id = kwargs['id']
@@ -240,7 +240,7 @@ class ResourceView(View):
 
         return context
 
-    def _get_next_url(self):
+    def _get_next_url(self, default=None):
         """
         Returns the next URL.
 
@@ -259,7 +259,7 @@ class ResourceView(View):
         # session first
         url = self.request.REQUEST.get('next') or url
 
-        return url
+        return url or default
 
     def _get_request_id_params(self):
         """
