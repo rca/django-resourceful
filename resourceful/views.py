@@ -139,6 +139,10 @@ class ResourceView(View):
         return HttpResponseRedirect(url)
 
     def _create_error(self, ctx):
+        # do not send the form object back for json error responses
+        if self.format == 'json':
+            ctx.pop('form', None)
+
         return self.render(ctx, status=400)
 
     def destroy(self, *args, **kwargs):
