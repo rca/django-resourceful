@@ -139,7 +139,7 @@ class ResourceView(View):
         return HttpResponseRedirect(url)
 
     def _create_error(self, ctx):
-        return self.render(ctx)
+        return self.render(ctx, status=400)
 
     def destroy(self, *args, **kwargs):
         item = self.model_class.objects.get_for_user(
