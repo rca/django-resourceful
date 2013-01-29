@@ -7,7 +7,7 @@ from django.db.models.loading import get_model
 from django.forms import BaseModelForm
 from django.http import HttpResponse, HttpResponseRedirect, QueryDict
 from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.template import loader, RequestContext
 from django.utils import six
 from django.utils.importlib import import_module
 from django.views.generic import View
@@ -278,28 +278,31 @@ class ResourceView(View):
 
         return kwargs
 
-    def render(self, context):
+    def render(self, context, status=None):
         if self.format in (None, 'html'):
-            return render_to_response(
+            content = loader.render_to_string(
                 self.templates,
                 context,
-                context_instance=RequestContext(self.request)
+                context_instance=RequestContext(self.request),
             )
+
+            return HttpResponse(content, status=status)
         else:
             renderer = getattr(self, 'render_{0}'.format(self.format))
             if not renderer:
                 raise RenderError('Unable to render {0}'.format(self.format))
 
-            return renderer(context)
+            return renderer(context, status=status)
 
-    def render_json(self, context):
+    def render_json(self, context, status=None):
         """
         Returns a JSON response for the given context
         """
 
         return HttpResponse(
             json.dumps(context, cls=DjangoEncoder(fields=self.serialize_fields)),
-            content_type='application/json'
+            content_type='application/json',
+            status=status
         )
 
     @property
