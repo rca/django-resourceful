@@ -126,6 +126,12 @@ class ResourceView(View):
         return form.save()
 
     def _create_success(self, item):
+        if self.format == 'json':
+            return self.render_json({
+                'message': 'success',
+                'item': item,
+            })
+
         url = self._get_next_url()
         if url is None:
             url = self.url_for('show', kwargs={'id': item.id})
