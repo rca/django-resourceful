@@ -116,6 +116,7 @@ class ResourceView(View):
             return self._create_success(item)
 
         ctx = {
+            'errors': [(k, unicode(v[0])) for k, v in form.errors.items()],
             'form': form,
         }
 
