@@ -112,7 +112,7 @@ class ResourceView(View):
     def create(self, *args, **kwargs):
         form = self.get_form(self.request.POST)
         if form.is_valid():
-            item = form.save()
+            item = self._create_save(form)
             return self._create_success(item)
 
         ctx = {
@@ -120,6 +120,9 @@ class ResourceView(View):
         }
 
         return self._create_error(ctx)
+
+    def _create_save(self, form):
+        return form.save()
 
     def _create_success(self, item):
         url = self._get_next_url()
