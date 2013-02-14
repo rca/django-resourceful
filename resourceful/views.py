@@ -194,8 +194,7 @@ class ResourceView(View):
         id = kwargs['id']
 
         ctx = self.get_context({
-            'item': self.model_class.objects.get_for_user(
-                self.request.user, pk=id),
+            'item': self.get_item(id),
         })
 
         return self.render(ctx)
