@@ -110,7 +110,7 @@ class ResourceView(View):
         return handler(request, *args, **kwargs)
 
     def create(self, *args, **kwargs):
-        form = self.get_form(self.request.POST)
+        form = self.get_form(self.request.REQUEST)
         if form.is_valid():
             item = self._create_save(form)
             return self._create_success(item)
