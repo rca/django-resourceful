@@ -337,7 +337,10 @@ class ResourceView(View):
 
     def get_form(self, data=None, initial=None, instance=None):
         new_initial = self._get_request_id_params()
-        new_initial.update(initial)
+
+        if initial:
+            new_initial.update(initial)
+
         form_kwargs = {
             'data': data,
             'initial': new_initial,
