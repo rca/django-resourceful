@@ -15,6 +15,7 @@ from resourceful.encoder import DjangoEncoder
 from resourceful.forms import BaseResourceForm
 from resourceful.models import ModelWrapper
 
+
 class RenderError(Exception):
     """
     Raised when a renderer for the requested format is not found
@@ -31,7 +32,7 @@ class ResourceView(View):
     model_class = None
     url_prefix = None
     template_dir = None
-    serialize_fields = None # When None default fields are serialized
+    serialize_fields = None  # When None default fields are serialized
 
     def __init__(self, **kwargs):
         super(ResourceView, self).__init__(**kwargs)
@@ -58,11 +59,11 @@ class ResourceView(View):
         """
         request.method = request.REQUEST.get('_method', request.method).upper()
 
-        id = kwargs.get('id') or None
+        pk = kwargs.get('id') or None
         action = kwargs.get('action') or None
 
         if action is None:
-            if id:
+            if pk:
                 if request.method == 'GET':
                     action = 'show'
                 elif request.method == 'PUT':
@@ -72,9 +73,9 @@ class ResourceView(View):
                     action = 'destroy'
                 else:
                     raise RoutingError(
-                        'Unsupported method {0} with id {1}'.format(request.method, id)
+                        'Unsupported method {0} with id {1}'.format(request.method, pk)
                     )
-            else: # no action, no id
+            else:  # no action, no id
                 if request.method == 'GET':
                     action = 'index'
                 elif request.method == 'POST':
@@ -90,7 +91,7 @@ class ResourceView(View):
                 action = 'update'
 
         kwargs.update({
-            'id': id,
+            'id': pk,
             'action': action,
         })
 
@@ -152,9 +153,9 @@ class ResourceView(View):
         return HttpResponseRedirect(self._get_next_url(default=self.url_for('index')))
 
     def edit(self, *args, **kwargs):
-        id = kwargs['id']
+        pk = kwargs['id']
         item = self.model_class.objects.get_for_user(
-            self.request.user, pk=id)
+            self.request.user, pk=pk)
 
         ctx = self.get_context({
             'form': self.get_form(instance=item),
@@ -179,9 +180,9 @@ class ResourceView(View):
         return self.model_class.objects.filter_for_user(self.request.user, **kwargs)
 
     def new(self, *args, **kwargs):
-        next = self.request.REQUEST.get('next')
-        if next:
-            self.request.session['next'] = next
+        next_page = self.request.REQUEST.get('next')
+        if next_page:
+            self.request.session['next'] = next_page
 
         ctx = {
             'form': self.get_form(),
@@ -190,10 +191,10 @@ class ResourceView(View):
         return self.render(ctx)
 
     def show(self, *args, **kwargs):
-        id = kwargs['id']
+        pk = kwargs['id']
 
         ctx = self.get_context({
-            'item': self.get_item(id),
+            'item': self.get_item(pk),
         })
 
         return self.render(ctx)
@@ -215,8 +216,8 @@ class ResourceView(View):
 
         return self._update_error(ctx)
 
-    def get_item(self, id):
-        return self.model_class.objects.get_for_user(self.request.user, pk=id)
+    def get_item(self, pk):
+        return self.model_class.objects.get_for_user(self.request.user, pk=pk)
 
     def _update_handle_form(self, form):
         if form.is_valid():
@@ -393,12 +394,29 @@ class ResourceView(View):
             **kwargs
         )
 
-        urlpatterns = patterns('',
-            url(r'{0}$'.format(url_prefix), view, name='{0}.index'.format(url_prefix)),
-            url(r'{0}/new$'.format(url_prefix), view, kwargs={'action': 'new'}, name='{0}.new'.format(url_prefix)),
-            url(r'{0}/(?P<id>[^/]+)$'.format(url_prefix), view, name='{0}.show'.format(url_prefix)),
-            url(r'{0}/(?P<id>[^/]+)/edit$'.format(url_prefix), view, kwargs={'action': 'edit'}, name='{0}.edit'.format(url_prefix)),
-            url(r'{0}/(?P<id>[^/]+)/(?P<action>[^/]*)$'.format(url_prefix), view, name='{0}.action'.format(url_prefix)),
+        urlpatterns = patterns(
+            '',
+
+            url(r'{0}$'.format(url_prefix),
+                view,
+                name='{0}.index'.format(url_prefix)),
+
+            url(r'{0}/new$'.format(url_prefix),
+                view,
+                kwargs={'action': 'new'},
+                name='{0}.new'.format(url_prefix)),
+
+            url(r'{0}/(?P<id>[^/]+)$'.format(url_prefix),
+                view,
+                name='{0}.show'.format(url_prefix)),
+
+            url(r'{0}/(?P<id>[^/]+)/edit$'.format(url_prefix),
+                view, kwargs={'action': 'edit'},
+                name='{0}.edit'.format(url_prefix)),
+
+            url(r'{0}/(?P<id>[^/]+)/(?P<action>[^/]*)$'.format(url_prefix),
+                view,
+                name='{0}.action'.format(url_prefix)),
         )
 
         return urlpatterns
