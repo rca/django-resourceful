@@ -115,12 +115,19 @@ class ResourceView(View):
             item = self._create_save(form)
             return self._create_success(item)
 
+        ctx = self._create_context(form)
+
+        return self._create_error(ctx)
+
+    def _create_context(self, form):
         ctx = {
-            'errors': [(k, unicode(v[0])) for k, v in form.errors.items()],
             'form': form,
         }
 
-        return self._create_error(ctx)
+        if self.format == 'json':
+            ctx['errors'] = [(k, unicode(v[0])) for k, v in form.errors.items()],
+
+        return ctx
 
     def _create_save(self, form):
         return form.save()
@@ -146,16 +153,20 @@ class ResourceView(View):
         return self.render(ctx, status=400)
 
     def destroy(self, *args, **kwargs):
-        item = self.model_class.objects.get_for_user(
-            self.request.user, pk=kwargs['id'])
+        item = self.get_item(kwargs['id'])
+
+        self.destroy_item(item)
+
+        return self._destroy_success(item)
+
+    def destroy_item(self, item):
         item.delete()
 
+    def _destroy_success(self, item):
         return HttpResponseRedirect(self._get_next_url(default=self.url_for('index')))
 
     def edit(self, *args, **kwargs):
-        pk = kwargs['id']
-        item = self.model_class.objects.get_for_user(
-            self.request.user, pk=pk)
+        item = self.get_item(kwargs['id'])
 
         ctx = self.get_context({
             'form': self.get_form(instance=item),
@@ -216,9 +227,6 @@ class ResourceView(View):
 
         return self._update_error(ctx)
 
-    def get_item(self, pk):
-        return self.model_class.objects.get_for_user(self.request.user, pk=pk)
-
     def _update_handle_form(self, form):
         if form.is_valid():
             form.save()
@@ -252,6 +260,9 @@ class ResourceView(View):
         context.update(extra)
 
         return context
+
+    def get_item(self, pk):
+        return self.model_class.objects.get_for_user(self.request.user, pk=pk)
 
     def _get_next_url(self, default=None):
         """
