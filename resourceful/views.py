@@ -335,10 +335,12 @@ class ResourceView(View):
 
         return getattr(forms, form_name)
 
-    def get_form(self, data=None, instance=None):
+    def get_form(self, data=None, initial=None, instance=None):
+        new_initial = self._get_request_id_params()
+        new_initial.update(initial)
         form_kwargs = {
             'data': data,
-            'initial': self._get_request_id_params(),
+            'initial': new_initial,
         }
 
         if issubclass(self.form_class, BaseModelForm):
