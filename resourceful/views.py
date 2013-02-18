@@ -6,7 +6,6 @@ from django.conf.urls import patterns, url
 from django.db.models.loading import get_model
 from django.forms import BaseModelForm
 from django.http import HttpResponse, HttpResponseRedirect, QueryDict
-from django.shortcuts import render_to_response
 from django.template import loader, RequestContext
 from django.utils import six
 from django.utils.importlib import import_module
