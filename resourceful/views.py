@@ -166,7 +166,10 @@ class ResourceView(View):
         return HttpResponseRedirect(self._get_next_url(default=self.url_for('index')))
 
     def edit(self, *args, **kwargs):
-        item = self.get_item(kwargs['id'])
+        try:
+            item = self.get_item(kwargs['id'])
+        except self.model_class.DoesNotExist:
+            raise Http404
 
         ctx = self.get_context({
             'form': self.get_form(instance=item),
@@ -204,8 +207,13 @@ class ResourceView(View):
     def show(self, *args, **kwargs):
         pk = kwargs['id']
 
+        try:
+            item = self.get_item(pk),
+        except self.model_class.DoesNotExist:
+            raise Http404
+
         ctx = self.get_context({
-            'item': self.get_item(pk),
+            'item': item,
         })
 
         return self.render(ctx)
