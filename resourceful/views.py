@@ -1,5 +1,6 @@
 import json
 import os
+import warnings
 
 from django.core.urlresolvers import reverse
 from django.conf.urls import patterns, url
@@ -386,6 +387,11 @@ class ResourceView(View):
 
     @classmethod
     def patterns_for(cls, model_class=None, template_dir=None, url_prefix=None, **kwargs):
+        warnings.warn("Use patterns() instead of patterns_for()", DeprecationWarning)
+        cls.patterns(model_class=model_class, template_dir=template_dir, url_prefix=url_prefix, **kwargs)
+
+    @classmethod
+    def patterns(cls, model_class=None, template_dir=None, url_prefix=None, **kwargs):
         if isinstance(model_class, six.string_types):
             t_app_label, t_model_name = model_class.split('.', 1)
             model_class = get_model(t_app_label, t_model_name)
