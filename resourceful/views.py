@@ -367,7 +367,7 @@ class ResourceView(View):
 
     @property
     def template_name(self):
-        return os.path.join(self.template_dir, self.url_prefix, '{0}.html'.format(self.action))
+        return os.path.join(self.template_dir, '{0}_{1}.html'.format(self.url_prefix, self.action))
 
     @property
     def templates(self):
