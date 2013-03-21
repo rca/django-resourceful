@@ -209,7 +209,7 @@ class ResourceView(View):
         pk = kwargs['id']
 
         try:
-            item = self.get_item(pk),
+            item = self.get_item(pk)
         except self.model_class.DoesNotExist:
             raise Http404
 
