@@ -1,5 +1,6 @@
 import json
 import os
+import warnings
 
 from django.core.urlresolvers import reverse
 from django.conf.urls import patterns, url
@@ -198,9 +199,9 @@ class ResourceView(View):
         if next_page:
             self.request.session['next'] = next_page
 
-        ctx = {
+        ctx = self.get_context({
             'form': self.get_form(),
-        }
+        })
 
         return self.render(ctx)
 
@@ -208,7 +209,7 @@ class ResourceView(View):
         pk = kwargs['id']
 
         try:
-            item = self.get_item(pk),
+            item = self.get_item(pk)
         except self.model_class.DoesNotExist:
             raise Http404
 
@@ -386,6 +387,14 @@ class ResourceView(View):
 
     @classmethod
     def patterns_for(cls, model_class=None, template_dir=None, url_prefix=None, **kwargs):
+        warnings.warn("Use patterns() instead of patterns_for()", DeprecationWarning)
+        cls.patterns(model_class=model_class, template_dir=template_dir, url_prefix=url_prefix, **kwargs)
+
+    @classmethod
+    def patterns(cls, model_class=None, template_dir=None, url_prefix=None, **kwargs):
+        # in case the model_class is defined in a subclass, but the parameter takes precedence anyway.
+        model_class = model_class or cls.model_class
+
         if isinstance(model_class, six.string_types):
             t_app_label, t_model_name = model_class.split('.', 1)
             model_class = get_model(t_app_label, t_model_name)
