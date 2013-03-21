@@ -199,9 +199,9 @@ class ResourceView(View):
         if next_page:
             self.request.session['next'] = next_page
 
-        ctx = {
+        ctx = self.get_context({
             'form': self.get_form(),
-        }
+        })
 
         return self.render(ctx)
 
