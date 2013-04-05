@@ -111,7 +111,10 @@ class ResourceView(View):
         return handler(request, *args, **kwargs)
 
     def create(self, *args, **kwargs):
-        form = self.get_form(self.request.REQUEST)
+        data = self.get_form_data()
+        files = self.get_form_files()
+
+        form = self.get_form(data, files)
         if form.is_valid():
             item = self._create_save(form)
             return self._create_success(item)
@@ -344,7 +347,7 @@ class ResourceView(View):
 
         return getattr(forms, form_name)
 
-    def get_form(self, data=None, initial=None, instance=None):
+    def get_form(self, data=None, files=None, initial=None, instance=None):
         new_initial = self._get_request_id_params()
 
         if initial:
@@ -352,6 +355,7 @@ class ResourceView(View):
 
         form_kwargs = {
             'data': data,
+            'files': files,
             'initial': new_initial,
         }
 
@@ -364,6 +368,12 @@ class ResourceView(View):
         form = self.form_class(**form_kwargs)
 
         return form
+
+    def get_form_data(self):
+        return self.request.REQUEST
+
+    def get_form_files(self):
+        return self.request.FILES
 
     @property
     def template_name(self):
