@@ -63,12 +63,24 @@ class ResourceView(View):
         pk = kwargs.get('id') or None
         action = kwargs.get('action') or None
 
+        is_ajax = request.is_ajax()
+        self.format = request.REQUEST.get('_format')
+
+        # when a format is not explicitly requested and the XMLHttpRequest
+        # header is found, route to <action>_json handler if one is defined.
+        if is_ajax and self.format is None:
+            self.format = 'json'
+
         if action is None:
             if pk:
                 if request.method == 'GET':
                     action = 'show'
                 elif request.method == 'PUT':
-                    request.PUT = QueryDict(request.body)
+                    if is_ajax:
+                        request.PUT = QueryDict(request.body)
+                    else:
+                        request.PUT = request.POST
+
                     action = 'update'
                 elif request.method == 'DELETE':
                     action = 'destroy'
@@ -95,13 +107,6 @@ class ResourceView(View):
             'id': pk,
             'action': action,
         })
-
-        self.format = request.REQUEST.get('_format')
-
-        # when a format is not explicitly requested and the XMLHttpRequest
-        # header is found, route to <action>_json handler if one is defined.
-        if request.is_ajax() and self.format is None:
-            self.format = 'json'
 
         handler = getattr(self, action, self.http_method_not_allowed)
 
