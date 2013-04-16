@@ -409,6 +409,8 @@ class ResourceView(View):
     def patterns(cls, model_class=None, template_dir=None, url_prefix=None, **kwargs):
         # in case the model_class is defined in a subclass, but the parameter takes precedence anyway.
         model_class = model_class or cls.model_class
+        url_prefix = url_prefix or cls.url_prefix
+        template_dir = template_dir or cls.template_dir
 
         if isinstance(model_class, six.string_types):
             t_app_label, t_model_name = model_class.split('.', 1)
