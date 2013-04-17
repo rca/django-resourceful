@@ -3,6 +3,7 @@ import sys
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class ResourceManager(models.Manager):
     def __init__(self):
         self._user_field = None
