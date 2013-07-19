@@ -1,0 +1,3 @@
+Django==1.5
+flexmock==0.9.7
+nose==1.3.0
