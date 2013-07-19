@@ -313,6 +313,8 @@ class ResourceView(View):
         for key in query_params:
             if key.endswith('_id'):
                 kwargs[key[:-3]] = query_params[key]
+            else:
+                kwargs[key] = query_params[key]
 
         return kwargs
 
