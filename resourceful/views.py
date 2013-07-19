@@ -279,7 +279,7 @@ class ResourceView(View):
         return context
 
     def get_item(self, pk):
-        return self.model_class.objects.get_for_user(self.request.user, pk=pk)
+        return self.model_class.objects.get(pk=pk)
 
     def _get_next_url(self, default=None):
         """
