@@ -1,9 +1,11 @@
+from django.core.exceptions import ObjectDoesNotExist
 from flexmock import flexmock
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.test import TestCase
 
 from resourceful.views import ResourceView
+
 
 class RoutingTestCase(TestCase):
     def test_index(self):
@@ -23,8 +25,9 @@ class RoutingTestCase(TestCase):
             'wsgi.input': '',
             'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest',
         })
+        request.user = flexmock()
 
-        model = flexmock(objects=flexmock(all=lambda: []))
+        model = flexmock(objects=flexmock(all=lambda: [], filter_for_user=flexmock()))
 
         flexmock(ResourceView).should_receive("render_json").once()
 
@@ -38,7 +41,11 @@ class RoutingTestCase(TestCase):
             'QUERY_STRING': '_format=json',
         })
 
-        model = flexmock(objects=flexmock(all=lambda: []))
+        request.user = flexmock()
+
+        model = flexmock(
+            objects=flexmock(all=lambda: [], filter_for_user=flexmock())
+        )
 
         flexmock(ResourceView).should_receive("render_json").once()
 
@@ -54,8 +61,8 @@ class RoutingTestCase(TestCase):
             'QUERY_STRING': '_format=json',
         })
 
-        view1 = ResourceView.as_view(model_class=flexmock(objects=flexmock(get=lambda *args, **kwargs: 'view1')))
-        view2 = ResourceView.as_view(model_class=flexmock(objects=flexmock(get=lambda *args, **kwargs: 'view2')))
+        view1 = ResourceView.as_view(model_class=flexmock(objects=flexmock(get=lambda *args, **kwargs: 'view1'), DoesNotExist=ObjectDoesNotExist))
+        view2 = ResourceView.as_view(model_class=flexmock(objects=flexmock(get=lambda *args, **kwargs: 'view2'), DoesNotExist=ObjectDoesNotExist))
 
         response1 = view1(request, resource='foo', id='1', action='')
         response2 = view2(request, resource='foo', id='1', action='')
