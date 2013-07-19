@@ -265,21 +265,23 @@ class ResourceView(View):
 
     def get_context(self, extra):
         url_prefix = self.url_prefix
+        context = {}
 
-        context = {
-            'index_url': '{0}.index'.format(url_prefix),
-            'show_url': '{0}.show'.format(url_prefix),
-            'new_url': '{0}.new'.format(url_prefix),
-            'edit_url': '{0}.edit'.format(url_prefix),
-            'action_url': '{0}.edit'.format(url_prefix),
-        }
+        if self.format != 'json':
+            context = {
+                'index_url': '{0}.index'.format(url_prefix),
+                'show_url': '{0}.show'.format(url_prefix),
+                'new_url': '{0}.new'.format(url_prefix),
+                'edit_url': '{0}.edit'.format(url_prefix),
+                'action_url': '{0}.edit'.format(url_prefix),
+            }
 
         context.update(extra)
 
         return context
 
     def get_item(self, pk):
-        return self.model_class.objects.get_for_user(self.request.user, pk=pk)
+        return self.model_class.objects.get(pk=pk)
 
     def _get_next_url(self, default=None):
         """
@@ -313,6 +315,8 @@ class ResourceView(View):
         for key in query_params:
             if key.endswith('_id'):
                 kwargs[key[:-3]] = query_params[key]
+            else:
+                kwargs[key] = query_params[key]
 
         return kwargs
 
