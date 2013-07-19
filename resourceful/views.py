@@ -265,14 +265,16 @@ class ResourceView(View):
 
     def get_context(self, extra):
         url_prefix = self.url_prefix
+        context = {}
 
-        context = {
-            'index_url': '{0}.index'.format(url_prefix),
-            'show_url': '{0}.show'.format(url_prefix),
-            'new_url': '{0}.new'.format(url_prefix),
-            'edit_url': '{0}.edit'.format(url_prefix),
-            'action_url': '{0}.edit'.format(url_prefix),
-        }
+        if self.format != 'json':
+            context = {
+                'index_url': '{0}.index'.format(url_prefix),
+                'show_url': '{0}.show'.format(url_prefix),
+                'new_url': '{0}.new'.format(url_prefix),
+                'edit_url': '{0}.edit'.format(url_prefix),
+                'action_url': '{0}.edit'.format(url_prefix),
+            }
 
         context.update(extra)
 
