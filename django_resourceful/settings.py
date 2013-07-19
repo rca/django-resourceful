@@ -126,6 +126,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 
     'resourceful',
+    'testapp',
 )
 
 # A sample logging configuration. The only tangible logging
