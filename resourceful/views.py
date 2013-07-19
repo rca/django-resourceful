@@ -34,6 +34,7 @@ class ResourceView(View):
     url_prefix = None
     template_dir = None
     serialize_fields = None  # When None default fields are serialized
+    query_map = {}
 
     def __init__(self, **kwargs):
         super(ResourceView, self).__init__(**kwargs)
@@ -319,7 +320,8 @@ class ResourceView(View):
             if key.endswith('_id'):
                 kwargs[key[:-3]] = query_params[key]
             else:
-                kwargs[key] = query_params[key]
+                _key = self.query_map.get(key, key)
+                kwargs[_key] = query_params[key]
 
         return kwargs
 

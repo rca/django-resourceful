@@ -2,7 +2,7 @@ import json
 
 from django.test import TestCase
 
-from testapp.models import Widget
+from testapp.models import Drawing, Widget
 
 
 class FilteringTestCase(TestCase):
@@ -16,8 +16,10 @@ class FilteringTestCase(TestCase):
         return data
 
     def setUp(self):
-        self.w1 = Widget.objects.create(name='item1', quantity=10)
-        self.w2 = Widget.objects.create(name='item2', quantity=20)
+        self.drawing = Drawing.objects.create(name='model1')
+
+        self.w1 = Widget.objects.create(name='item1', drawing=self.drawing, quantity=10)
+        self.w2 = Widget.objects.create(name='item2', drawing=self.drawing, quantity=20)
 
     def test_attribute_filtering(self):
         data = self.get_json('/widget', {'name': 'item1'})
@@ -29,3 +31,8 @@ class FilteringTestCase(TestCase):
         data = self.get_json('/widget', {'name': 'item1', '_format': 'json'})
 
         self.assertEqual(1, len(data['items']))
+
+    def test_fk_filter(self):
+        data = self.get_json('/widget', {'drawing': 'model1'})
+
+        self.assertEqual(2, len(data['items']))
