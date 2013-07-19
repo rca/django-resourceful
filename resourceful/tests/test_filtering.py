@@ -23,3 +23,12 @@ class FilteringTestCase(TestCase):
 
         self.assertEqual(1, len(data['items']))
         self.assertEqual('item1', data['items'][0]['fields']['name'])
+
+    def test_underscore_param_removal(self):
+        w1 = Widget.objects.create(name='item1', quantity=10)
+        w2 = Widget.objects.create(name='item2', quantity=20)
+
+        data = self.get_json('/widget', {'name': 'item1', '_format': 'json'})
+
+        self.assertEqual(1, len(data['items']))
+        self.assertEqual('item1', data['items'][0]['fields']['name'])
