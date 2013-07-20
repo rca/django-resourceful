@@ -46,7 +46,9 @@ class ObjectsWrapper(object):
         if item.endswith(super(ObjectsWrapper, self).__getattribute__('suffix')):
             return self.objects_method(item)
         else:
-            return super(ObjectsWrapper, self).__getattribute__(item)
+            model_objects = super(ObjectsWrapper, self).__getattribute__('model_objects')
+
+            return model_objects.__getattribute__(item)
 
     def objects_method(self, method_name):
         """
