@@ -76,11 +76,6 @@ class ResourceView(View):
                 if request.method == 'GET':
                     action = 'show'
                 elif request.method == 'PUT':
-                    if is_ajax:
-                        request.PUT = QueryDict(request.body)
-                    else:
-                        request.PUT = request.POST
-
                     action = 'update'
                 elif request.method == 'DELETE':
                     action = 'destroy'
@@ -102,6 +97,12 @@ class ResourceView(View):
                 action = 'create'
             elif action == 'edit' and request.method == 'PUT':
                 action = 'update'
+
+        if request.method == 'PUT':
+            if is_ajax:
+                request.PUT = QueryDict(request.body)
+            else:
+                request.PUT = request.POST
 
         kwargs.update({
             'id': pk,
