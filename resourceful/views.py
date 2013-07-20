@@ -14,7 +14,6 @@ from django.views.generic import View
 
 from resourceful.encoder import DjangoEncoder
 from resourceful.forms import BaseResourceForm
-from resourceful.models import ModelWrapper
 
 
 class RenderError(Exception):
@@ -201,7 +200,7 @@ class ResourceView(View):
         return self.render(ctx)
 
     def _get_items(self, **kwargs):
-        return self.model_class.objects.filter_for_user(self.request.user, **kwargs)
+        return self.model_class.objects.filter(**kwargs)
 
     def new(self, *args, **kwargs):
         next_page = self.request.REQUEST.get('next')
@@ -432,7 +431,6 @@ class ResourceView(View):
                 raise RoutingError('Do not specify template_dir when giving a model_class')
 
             url_prefix = url_prefix or model_class._meta.object_name.lower()
-            model_wrapper = ModelWrapper(model_class)
 
             meta = model_class._meta
             template_dir = meta.app_label
@@ -447,7 +445,7 @@ class ResourceView(View):
                 'Unable to create patterns without a template_dir or model_class')
 
         view = cls.as_view(
-            model_class=model_wrapper,
+            model_class=model_class,
             url_prefix=url_prefix,
             template_dir=template_dir,
             **kwargs
