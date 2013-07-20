@@ -1,6 +1,10 @@
 from resourceful.views import ResourceView
 
-from testapp.models import Widget
+from testapp.models import Widget, Drawing
+
+
+class DrawingView(ResourceView):
+    model_class = Drawing
 
 
 class WidgetView(ResourceView):
