@@ -27,7 +27,7 @@ class RoutingTestCase(TestCase):
         })
         request.user = flexmock()
 
-        model = flexmock(objects=flexmock(all=lambda: [], filter_for_user=flexmock()))
+        model = flexmock(objects=flexmock(all=lambda: [], filter=flexmock()))
 
         flexmock(ResourceView).should_receive("render_json").once()
 
@@ -44,7 +44,7 @@ class RoutingTestCase(TestCase):
         request.user = flexmock()
 
         model = flexmock(
-            objects=flexmock(all=lambda: [], filter_for_user=flexmock())
+            objects=flexmock(all=lambda: [], filter=flexmock())
         )
 
         flexmock(ResourceView).should_receive("render_json").once()
