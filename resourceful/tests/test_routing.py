@@ -27,11 +27,19 @@ class RoutingTestCase(TestCase):
         })
         request.user = flexmock()
 
-        model = flexmock(objects=flexmock(all=lambda: [], filter=flexmock()))
+        query_set_mock = flexmock(all=lambda: [], filter=flexmock())
 
-        flexmock(ResourceView).should_receive("render_json").once()
+        resource_view_mock = flexmock(ResourceView)
+        (resource_view_mock
+         .should_receive("render_json")
+         .once())
 
-        view = ResourceView.as_view(model_class=model)
+        (resource_view_mock
+         .should_receive("get_query_set")
+         .and_return(query_set_mock)
+         .once())
+
+        view = ResourceView.as_view(model_class=flexmock())
         view(request, resource='foo', id='', action='')
 
     def test_index_json_with_format(self):
@@ -43,13 +51,16 @@ class RoutingTestCase(TestCase):
 
         request.user = flexmock()
 
-        model = flexmock(
-            objects=flexmock(all=lambda: [], filter=flexmock())
-        )
+        query_set_mock = flexmock(all=lambda: [], filter=flexmock())
+
+        (flexmock(ResourceView)
+            .should_receive('get_query_set')
+            .and_return(query_set_mock)
+            .once())
 
         flexmock(ResourceView).should_receive("render_json").once()
 
-        view = ResourceView.as_view(model_class=model)
+        view = ResourceView.as_view(model_class=flexmock())
         view(request, resource='foo', id='', action='')
 
     def test_view_with_different_model(self):
@@ -61,8 +72,17 @@ class RoutingTestCase(TestCase):
             'QUERY_STRING': '_format=json',
         })
 
-        view1 = ResourceView.as_view(model_class=flexmock(objects=flexmock(get=lambda *args, **kwargs: 'view1'), DoesNotExist=ObjectDoesNotExist))
-        view2 = ResourceView.as_view(model_class=flexmock(objects=flexmock(get=lambda *args, **kwargs: 'view2'), DoesNotExist=ObjectDoesNotExist))
+        query_set_mock = flexmock(get=lambda *args, **kwargs: 'view1')
+
+        resource_view_mock = flexmock(ResourceView)
+        (resource_view_mock
+            .should_receive('get_query_set')
+            .and_return(query_set_mock)
+            .twice())
+
+        model_mock = flexmock()
+        view1 = ResourceView.as_view(model_class=model_mock)
+        view2 = ResourceView.as_view(model_class=model_mock)
 
         response1 = view1(request, resource='foo', id='1', action='')
         response2 = view2(request, resource='foo', id='1', action='')

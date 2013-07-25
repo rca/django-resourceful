@@ -201,7 +201,10 @@ class ResourceView(View):
         return self.render(ctx)
 
     def _get_items(self, **kwargs):
-        return self.model_class.objects.filter(**kwargs)
+        return self.get_query_set().filter(**kwargs)
+
+    def get_query_set(self):
+        return self.model_class.objects.get_query_set()
 
     def new(self, *args, **kwargs):
         next_page = self.request.REQUEST.get('next')
@@ -282,7 +285,7 @@ class ResourceView(View):
         return context
 
     def get_item(self, pk):
-        return self.model_class.objects.get(pk=pk)
+        return self.get_query_set().get(pk=pk)
 
     def _get_next_url(self, default=None):
         """
