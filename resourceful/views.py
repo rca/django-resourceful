@@ -267,6 +267,18 @@ class ResourceView(View):
     # -- Helper methods
     #
 
+    def dump_json(self, json_data):
+        """
+        Converts the given data structure to a JSON string
+        """
+        return json.dumps(json_data, cls=DjangoEncoder(fields=self.serialize_fields)),
+
+    def get_json(self, context):
+        """
+        Returns the object's data structure representation
+        """
+        return context
+
     def get_context(self, extra):
         url_prefix = self.url_prefix
         context = {}
@@ -350,7 +362,7 @@ class ResourceView(View):
         """
 
         return HttpResponse(
-            json.dumps(context, cls=DjangoEncoder(fields=self.serialize_fields)),
+            self.dump_json(self.get_json(context)),
             content_type='application/json',
             status=status
         )
