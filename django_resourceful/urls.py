@@ -3,7 +3,7 @@ from django.conf.urls import patterns, include, url
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
-from testapp.views import DrawingView, WidgetView
+from testapp.views import DrawingView, WidgetView, AnotherWidgetView
 
 
 urlpatterns = patterns('',
@@ -20,4 +20,5 @@ urlpatterns = patterns('',
 
 
 urlpatterns += WidgetView.patterns()
+urlpatterns += AnotherWidgetView.patterns()
 urlpatterns += DrawingView.patterns()

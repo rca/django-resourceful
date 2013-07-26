@@ -1,10 +1,16 @@
+import json
+
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
+
 from flexmock import flexmock
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.test import TestCase
 
 from resourceful.views import ResourceView
+
+from testapp.models import Drawing, AnotherWidget
 
 
 class RoutingTestCase(TestCase):
@@ -170,3 +176,27 @@ class RoutingTestCase(TestCase):
 
         view = ResourceView.as_view()
         view(request, resource='foo', id='10', action='')
+
+    def test_pattern_anchoring(self):
+        # ensure that /widget does not stop on /anotherwidget
+
+        drawing = Drawing.objects.create(name='drawing')
+
+        widget = AnotherWidget.objects.create(
+            name='test',
+            drawing=drawing,
+            quantity=1,
+            another='foo',
+        )
+
+        url = reverse('anotherwidget.index')
+        data = {
+            '_format': 'json',
+        }
+
+        response = self.client.get(url, data=data)
+        self.assertEqual(200, response.status_code)
+
+        json_response = json.loads(response.content)
+        self.assertEquals('testapp.anotherwidget', json_response['items'][0]['model'])
+

@@ -10,3 +10,7 @@ class Widget(models.Model):
     drawing = models.ForeignKey(Drawing)
 
     quantity = models.PositiveIntegerField()
+
+
+class AnotherWidget(Widget):
+    another = models.CharField(max_length=32)

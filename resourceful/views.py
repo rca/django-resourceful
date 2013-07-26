@@ -458,24 +458,24 @@ class ResourceView(View):
         urlpatterns = patterns(
             '',
 
-            url(r'{0}$'.format(url_prefix),
+            url(r'^{0}$'.format(url_prefix),
                 view,
                 name='{0}.index'.format(url_prefix)),
 
-            url(r'{0}/new$'.format(url_prefix),
+            url(r'^{0}/new$'.format(url_prefix),
                 view,
                 kwargs={'action': 'new'},
                 name='{0}.new'.format(url_prefix)),
 
-            url(r'{0}/(?P<id>[^/]+)$'.format(url_prefix),
+            url(r'^{0}/(?P<id>[^/]+)$'.format(url_prefix),
                 view,
                 name='{0}.show'.format(url_prefix)),
 
-            url(r'{0}/(?P<id>[^/]+)/edit$'.format(url_prefix),
+            url(r'^{0}/(?P<id>[^/]+)/edit$'.format(url_prefix),
                 view, kwargs={'action': 'edit'},
                 name='{0}.edit'.format(url_prefix)),
 
-            url(r'{0}/(?P<id>[^/]+)/(?P<action>[^/]*)$'.format(url_prefix),
+            url(r'^{0}/(?P<id>[^/]+)/(?P<action>[^/]*)$'.format(url_prefix),
                 view,
                 name='{0}.action'.format(url_prefix)),
         )

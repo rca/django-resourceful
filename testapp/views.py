@@ -1,6 +1,6 @@
 from resourceful.views import ResourceView
 
-from testapp.models import Widget, Drawing
+from testapp.models import AnotherWidget, Widget, Drawing
 
 
 class DrawingView(ResourceView):
@@ -12,3 +12,7 @@ class WidgetView(ResourceView):
     query_map = {
         'drawing': 'drawing__name',
     }
+
+
+class AnotherWidgetView(ResourceView):
+    model_class = AnotherWidget
