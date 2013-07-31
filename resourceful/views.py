@@ -33,6 +33,7 @@ class ResourceView(View):
     url_prefix = None
     template_dir = None
     serialize_fields = None  # When None default fields are serialized
+    decorate_with = ()  # Decorators for the view
     query_map = {}
 
     def __init__(self, **kwargs):
@@ -430,11 +431,12 @@ class ResourceView(View):
         cls.patterns(model_class=model_class, template_dir=template_dir, url_prefix=url_prefix, **kwargs)
 
     @classmethod
-    def patterns(cls, model_class=None, template_dir=None, url_prefix=None, **kwargs):
+    def patterns(cls, model_class=None, template_dir=None, url_prefix=None, decorate_with=None, **kwargs):
         # in case the model_class is defined in a subclass, but the parameter takes precedence anyway.
         model_class = model_class or cls.model_class
         url_prefix = url_prefix or cls.url_prefix
         template_dir = template_dir or cls.template_dir
+        decorate_with = decorate_with or cls.decorate_with
 
         if isinstance(model_class, six.string_types):
             t_app_label, t_model_name = model_class.split('.', 1)
@@ -466,6 +468,10 @@ class ResourceView(View):
             template_dir=template_dir,
             **kwargs
         )
+
+        # apply all decroators to the view
+        for decorator in decorate_with:
+            view = decorator(view)
 
         urlpatterns = patterns(
             '',
