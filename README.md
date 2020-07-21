@@ -1,6 +1,8 @@
 django-resourceful
 ==================
 
+NOTE: this is proof-of-concept code and is no longer maintained.
+
 Rails-like resourceful routing for Django.
 
 This app aims to provide an easy-to-use routing mechanism that calls view
